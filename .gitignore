@@ -1,104 +1,991 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+from tkinter import *
+import random
+import time
 
-# C extensions
-*.so
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+class Ball:
+    def __init__(self, canvas, color, size, paddle, paddle1, defensalocal, defensavisitante,
+                 mediocampolocal, mediocampovisitante, delanteralocal, delanteravisitante):
+        self.canvas = canvas
+        self.paddle = paddle
+        self.paddle1 = paddle1
+        self.defensalocal = defensalocal
+        self.defensavisitante = defensavisitante
+        self.mediocampolocal = mediocampolocal
+        self.mediocampovisitante = mediocampovisitante
+        self.delanteralocal = delanteralocal
+        self.delanteravisitante = delanteravisitante
+        self.id = canvas.create_oval(10, 10, size, size, fill=color)
+        self.canvas.move(self.id, 583, 283)
+        self.x = 0
+        self.y = 0
+        self.score1 = 0
+        self.score2 = 0
+        self.canvas.bind_all('<KeyPress-0>', self.start_move)
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+    def draw(self):
+        self.canvas.move(self.id, self.x, self.y)
+        pos = self.canvas.coords(self.id)
+        if pos[1] <= 20:
+            starts = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            self.y = starts[0]
+        if pos[3] >= 580:
+            starts = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts)
+            self.y = starts[0]
+        if pos[0] <= 20:
+            starts = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            self.x = starts[0]
+        if pos[2] >= 1180:
+            starts = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts)
+            self.x = starts[0]
+        if pos[1] >= 200 and pos[3] <= 400:
+            if pos[2] >= 1180:
+                self.canvas.move(self.id, 232, 400)
+                self.id = canvas.create_oval(10, 10, 25, 25, fill="white")
+                self.canvas.move(self.id, 583, 282)
+                self.x = 0
+                self.y = 0
+                self.score1 += 1
+        if pos[1] >= 200 and pos[3] <= 400:
+            if pos[0] <= 20:
+                self.canvas.move(self.id, 232, 400)
+                self.id = canvas.create_oval(10, 10, 25, 25, fill="white")
+                self.canvas.move(self.id, 583, 282)
+                self.x = 0
+                self.y = 0
+                self.score2 += 1
+        if self.hit_paddle(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_paddle1(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa3left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1defensa3right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2defensa1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2defensa1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts[0]
+        if self.hit_2defensa2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2defensa2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2defensa3left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2defensa3right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio3left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio3right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio4left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio4right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio5left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1medio5right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio3left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio3right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio4left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio4right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio5left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2medio5right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1delantera1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1delantera1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1delantera2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_1delantera2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2delantera1left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts[0]
+        if self.hit_2delantera1right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2delantera2left(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [-5, -6, -7, -8, -9, -10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
+        if self.hit_2delantera2right(pos):
+            starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+            random.shuffle(starts)
+            starts2 = [5, 6, 7, 8, 9, 10]
+            random.shuffle(starts2)
+            self.y = starts[0]
+            self.x = starts2[0]
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+    def start_move(self, evt):
+        self.canvas.move(self.id, 0, 0)
+        starts = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+        starts2 = [-10, -9, -8, -7, -6, -5, 5, 6, 7, 8, 9, 10]
+        random.shuffle(starts)
+        random.shuffle(starts2)
+        self.x = starts[0]
+        self.y = starts2[0]
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
+    def hit_paddle(self, pos):
+        paddle_pos = self.canvas.coords(self.paddle.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# Translations
-*.mo
-*.pot
+    def hit_paddle1(self, pos):
+        paddle_pos = self.canvas.coords(self.paddle1.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
+    def hit_1defensa1left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Flask stuff:
-instance/
-.webassets-cache
+    def hit_1defensa1right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# Scrapy stuff:
-.scrapy
+    def hit_1defensa2left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Sphinx documentation
-docs/_build/
+    def hit_1defensa2right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# PyBuilder
-target/
+    def hit_1defensa3left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Jupyter Notebook
-.ipynb_checkpoints
+    def hit_1defensa3right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensalocal.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# pyenv
-.python-version
+    def hit_2defensa1left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# celery beat schedule file
-celerybeat-schedule
+    def hit_2defensa1right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# SageMath parsed files
-*.sage.py
+    def hit_2defensa2left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+    def hit_2defensa2right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# Spyder project settings
-.spyderproject
-.spyproject
+    def hit_2defensa3left(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# Rope project settings
-.ropeproject
+    def hit_2defensa3right(self, pos):
+        paddle_pos = self.canvas.coords(self.defensavisitante.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
 
-# mkdocs documentation
-/site
+    def hit_1medio1left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
 
-# mypy
-.mypy_cache/
+    def hit_1medio1right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio2left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio2right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio3left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio3right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio4left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id4)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio4right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id4)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio5left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id5)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1medio5right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampolocal.id5)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio1left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio1right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio2left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio2right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio3left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio3right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id3)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio4left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id4)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio4right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id4)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio5left(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id5)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2medio5right(self, pos):
+        paddle_pos = self.canvas.coords(self.mediocampovisitante.id5)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1delantera1left(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteralocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1delantera1right(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteralocal.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1delantera2left(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteralocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_1delantera2right(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteralocal.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2delantera1left(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteravisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2delantera1right(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteravisitante.id)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2delantera2left(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteravisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[2] <= paddle_pos[2]:
+                return True
+        return False
+
+    def hit_2delantera2right(self, pos):
+        paddle_pos = self.canvas.coords(self.delanteravisitante.id2)
+        if pos[3] >= paddle_pos[1] and pos[1] <= paddle_pos[3]:
+            if paddle_pos[0] <= pos[0] <= paddle_pos[2]:
+                return True
+        return False
+
+
+class Paddle:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(0, -100, 20, -50, fill=color)
+        self.canvas.move(self.id, 10, 375)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-q>', self.move_up)
+        self.canvas.bind_all('<KeyPress-a>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        if pos[1] <= 200:
+            self.y = 0
+        if pos[3] >= 400:
+            self.y = 0
+
+    def move_up(self, evt):
+        self.y = -5
+
+    def move_down(self, evt):
+        self.y = 5
+
+
+class Paddle1:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(1140, -100, 1160, -50, fill=color)
+        self.canvas.move(self.id, 30, 375)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-o>', self.move_up)
+        self.canvas.bind_all('<KeyPress-l>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        if pos[1] <= 200:
+            self.y = 0
+        if pos[3] >= 400:
+            self.y = 0
+
+    def move_up(self, evt):
+        self.y = -5
+
+    def move_down(self, evt):
+        self.y = 5
+
+
+class Defensalocal:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, -160, 200)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, -160, 375)
+        self.id3 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id3, -160, 550)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-w>', self.move_up)
+        self.canvas.bind_all('<KeyPress-s>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        self.canvas.move(self.id3, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos2 = self.canvas.coords(self.id3)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos2[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+
+class Defensavisitante:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, 740, 200)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, 740, 375)
+        self.id3 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id3, 740, 550)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-i>', self.move_up)
+        self.canvas.bind_all('<KeyPress-k>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        self.canvas.move(self.id3, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos2 = self.canvas.coords(self.id3)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos2[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+
+class Mediocampolocal:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, 170, 175)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, 170, 275)
+        self.id3 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id3, 170, 375)
+        self.id4 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id4, 170, 475)
+        self.id5 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id5, 170, 575)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-e>', self.move_up)
+        self.canvas.bind_all('<KeyPress-d>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        self.canvas.move(self.id3, 0, self.y)
+        self.canvas.move(self.id4, 0, self.y)
+        self.canvas.move(self.id5, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos5 = self.canvas.coords(self.id5)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos5[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+class Mediocampovisitante:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, 410, 175)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, 410, 275)
+        self.id3 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id3, 410, 375)
+        self.id4 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id4, 410, 475)
+        self.id5 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id5, 410, 575)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-u>', self.move_up)
+        self.canvas.bind_all('<KeyPress-j>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        self.canvas.move(self.id3, 0, self.y)
+        self.canvas.move(self.id4, 0, self.y)
+        self.canvas.move(self.id5, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos5 = self.canvas.coords(self.id5)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos5[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+
+class Delanteralocal:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, 580, 290)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, 580, 460)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-r>', self.move_up)
+        self.canvas.bind_all('<KeyPress-f>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos2 = self.canvas.coords(self.id2)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos2[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+
+class Delanteravisitante:
+    def __init__(self, canvas, color):
+        self.canvas = canvas
+        self.id = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id, 0, 290)
+        self.id2 = canvas.create_rectangle(300, -100, 320, -50, fill=color)
+        self.canvas.move(self.id2, 0, 460)
+        self.y = 0
+        self.canvas.bind_all('<KeyPress-y>', self.move_up)
+        self.canvas.bind_all('<KeyPress-h>', self.move_down)
+
+    def draw(self):
+        self.canvas.move(self.id, 0, self.y)
+        self.canvas.move(self.id2, 0, self.y)
+        pos = self.canvas.coords(self.id)
+        pos2 = self.canvas.coords(self.id2)
+        if pos[1] <= 20:
+            self.y = 0
+        if pos2[3] >= 580:
+            self.y = 0
+
+    def move_up(self, evt):
+            self.y = -5
+
+    def move_down(self, evt):
+            self.y = 5
+
+
+tk = Tk()
+tk.title("PACHANGA")
+canvas = Canvas(tk, width=1200, height=600, bd=0, bg='green')
+canvas.pack()
+canvas.create_oval(1170, 570, 1190, 590, fill="white")
+canvas.create_oval(1172, 572, 1188, 588, fill="green")
+canvas.create_oval(1170, 30, 1190, 10, fill="white")
+canvas.create_oval(1172, 28, 1188, 12, fill="green")
+canvas.create_oval(10, 10, 30, 30, fill="white")
+canvas.create_oval(12, 12, 28, 28, fill="green")
+canvas.create_oval(10, 590, 30, 570, fill="white")
+canvas.create_oval(12, 588, 28, 572, fill="green")
+canvas.create_rectangle(0, 580, 1300, 700, fill="green")
+canvas.create_rectangle(1180, 0, 1300, 700, fill="green")
+canvas.create_rectangle(0, 0, 1300, 20, fill="green")
+canvas.create_rectangle(0, 0, 20, 700, fill="green")
+canvas.create_line(1180, 200, 1195, 200, fill="white")
+canvas.create_line(1180, 400, 1195, 400, fill="white")
+canvas.create_line(1195, 200, 1195, 400, fill="white")
+canvas.create_line(5, 200, 5, 400, fill="white")
+canvas.create_line(5, 200, 20, 200, fill="white")
+canvas.create_line(5, 400, 20, 400, fill="white")
+canvas.create_oval(500, 200, 700, 400, fill="white")
+canvas.create_oval(502, 202, 698, 398, fill="green")
+canvas.create_oval(590, 290, 610, 310, fill="white")
+canvas.create_line(600, 20, 600, 580, fill="white")
+canvas.create_oval(80, 200, 280, 400, fill="white")
+canvas.create_oval(82, 202, 278, 398, fill="green")
+canvas.create_rectangle(20, 100, 240, 500, fill="green")
+canvas.create_line(20, 150, 120, 150, fill="white")
+canvas.create_line(20, 450, 120, 450, fill="white")
+canvas.create_line(120, 150, 120, 450, fill="white")
+canvas.create_line(20, 100, 240, 100, fill="white")
+canvas.create_line(20, 500, 240, 500, fill="white")
+canvas.create_line(240, 100, 240, 500, fill="white")
+canvas.create_oval(170, 290, 190, 310, fill="white")
+canvas.create_oval(1120, 200, 920, 400, fill="white")
+canvas.create_oval(1118, 202, 922, 398, fill="green")
+canvas.create_rectangle(1180, 100, 960, 500, fill="green")
+canvas.create_line(1180, 150, 1080, 150, fill="white")
+canvas.create_line(1180, 450, 1080, 450, fill="white")
+canvas.create_line(1080, 150, 1080, 450, fill="white")
+canvas.create_line(1180, 100, 960, 100, fill="white")
+canvas.create_line(1180, 500, 960, 500, fill="white")
+canvas.create_line(960, 100, 960, 500, fill="white")
+canvas.create_oval(1010, 290, 1030, 310, fill="white")
+canvas.create_line(20, 0, 20, 20, fill="green")
+canvas.create_line(20, 601, 20, 580, fill="green")
+canvas.create_line(1180, 601, 1180, 570, fill="green")
+canvas.create_line(1180, 20, 1210, 20, fill="green")
+canvas.create_line(1180, 20, 1180, 580, fill="white")
+canvas.create_line(20, 20, 1180, 20, fill="white")
+canvas.create_line(20, 20, 20, 580, fill="white")
+canvas.create_line(20, 580, 1180, 580, fill="white")
+
+label = canvas.create_text(400, 300, text="0", fill="white", font=("Default", 200))
+label1 = canvas.create_text(800, 300, text="0", fill="white", font=("Default", 200))
+
+tk.update()
+paddle = Paddle(canvas, "black")
+paddle1 = Paddle1(canvas, "blue")
+defensalocal = Defensalocal(canvas, "white")
+defensavisitante = Defensavisitante(canvas, "yellow")
+mediocampolocal = Mediocampolocal(canvas, 'white')
+mediocampovisitante = Mediocampovisitante(canvas, 'yellow')
+delanteralocal = Delanteralocal(canvas, 'white')
+delanteravisitante = Delanteravisitante(canvas, 'yellow')
+ball = Ball(canvas, "white", 25, paddle, paddle1, defensalocal, defensavisitante,
+            mediocampolocal, mediocampovisitante, delanteralocal, delanteravisitante)
+
+while ball.score1 < 5:
+    if ball.score2 < 5:
+        ball.draw()
+        paddle.draw()
+        paddle1.draw()
+        defensalocal.draw()
+        defensavisitante.draw()
+        mediocampolocal.draw()
+        mediocampovisitante.draw()
+        delanteralocal.draw()
+        delanteravisitante.draw()
+        canvas.itemconfig(label, text=str(ball.score1))
+        canvas.itemconfig(label1, text=str(ball.score2))
+        tk.update_idletasks()
+        tk.update()
+        time.sleep(0.01)
+    elif ball.score2 == 5:
+        canvas.create_text(600, 100, fill="white", font=("Default", 100), text="PLAYER 2 WINS")
+        tk.update()
+
+while ball.score1 == 5:
+    canvas.create_text(600, 100, fill="white", font=("Default", 100), text="PLAYER 1 WINS")
+    tk.update()
